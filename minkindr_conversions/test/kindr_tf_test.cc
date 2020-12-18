@@ -5,7 +5,7 @@
 
 #include "testing_predicates.h"
 
-namespace tf {
+namespace minkindr_conversions {
 
 const double kTestTolerance = std::numeric_limits<double>::epsilon() * 3;
 
@@ -44,8 +44,8 @@ TEST(KindrTfTest, transformKindrToTFToKindr) {
   kindr::minimal::QuatTransformation output_transform;
   transformTFToKindr(tf_transform, &output_transform);
 
-  EXPECT_NEAR_EIGEN(output_transform.getRotation().toImplementation().coeffs(),
-                    rotation.coeffs(), kTestTolerance);
+  EXPECT_NEAR_EIGEN(output_transform.getRotation().toImplementation().coeffs(), rotation.coeffs(),
+                    kTestTolerance);
   EXPECT_NEAR_EIGEN(output_transform.getPosition(), position, kTestTolerance);
 }
 
@@ -72,7 +72,7 @@ TEST(KindrTfTest, vectorKindrToTFToKindr) {
   EXPECT_NEAR_EIGEN(output_position, position, kTestTolerance);
 }
 
-}  // namespace tf
+} // namespace minkindr_conversions
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

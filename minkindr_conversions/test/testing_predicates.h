@@ -18,21 +18,22 @@
 #ifndef TESTING_PREDICATES_H_
 #define TESTING_PREDICATES_H_
 
-#include <gtest/gtest.h>
 #include <glog/logging.h>
+#include <gtest/gtest.h>
 
-#define __INTERNAL_GTEST_NEAR_EIGEN(PREDICATE, matrix_A, matrix_B, precision) \
-  PREDICATE##_TRUE((matrix_A).isApprox((matrix_B), precision))                \
-      << "For matrices '" << #matrix_A << "' and '" << #matrix_B << "'."      \
-      << std::endl << "Where '" << #matrix_A << "' equals: " << std::endl     \
-      << (matrix_A) << std::endl << "and '" << #matrix_B                      \
-      << "' equals: " << std::endl << (matrix_B) << std::endl                 \
+#define __INTERNAL_GTEST_NEAR_EIGEN(PREDICATE, matrix_A, matrix_B, precision)                      \
+  PREDICATE##_TRUE((matrix_A).isApprox((matrix_B), precision))                                     \
+      << "For matrices '" << #matrix_A << "' and '" << #matrix_B << "'." << std::endl              \
+      << "Where '" << #matrix_A << "' equals: " << std::endl                                       \
+      << (matrix_A) << std::endl                                                                   \
+      << "and '" << #matrix_B << "' equals: " << std::endl                                         \
+      << (matrix_B) << std::endl                                                                   \
       << "and precision equals: " << precision;
 
-#define EXPECT_NEAR_EIGEN(matrix_A, matrix_B, precision) \
+#define EXPECT_NEAR_EIGEN(matrix_A, matrix_B, precision)                                           \
   __INTERNAL_GTEST_NEAR_EIGEN(EXPECT, matrix_A, matrix_B, precision)
 
-#define ASSERT_NEAR_EIGEN(matrix_A, matrix_B, precision) \
+#define ASSERT_NEAR_EIGEN(matrix_A, matrix_B, precision)                                           \
   __INTERNAL_GTEST_NEAR_EIGEN(ASSERT, matrix_A, matrix_B, precision)
 
-#endif  // TESTING_PREDICATES_H_
+#endif // TESTING_PREDICATES_H_

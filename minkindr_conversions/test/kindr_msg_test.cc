@@ -8,7 +8,7 @@
 #include "minkindr_conversions/kindr_msg.h"
 #include "testing_predicates.h"
 
-namespace tf {
+namespace minkindr_conversions {
 
 const double kTestTolerance = std::numeric_limits<double>::epsilon() * 3;
 
@@ -23,14 +23,13 @@ TEST(KindrMsgTest, poseKindrToMsgToKindr) {
   kindr::minimal::QuatTransformation output_transform;
   poseMsgToKindr(msg, &output_transform);
 
-  EXPECT_NEAR_EIGEN(
-      output_transform.getRotation().toImplementation().coeffs(),
-      rotation.coeffs(), kTestTolerance);
+  EXPECT_NEAR_EIGEN(output_transform.getRotation().toImplementation().coeffs(), rotation.coeffs(),
+                    kTestTolerance);
   EXPECT_NEAR_EIGEN(output_transform.getPosition(), position, kTestTolerance);
 }
 
 TEST(KindrMsgTest, poseKindr2DToMsgToKindr2D) {
-  for(auto const angle_rad : {-0.5, 0.5}) {
+  for (auto const angle_rad : {-0.5, 0.5}) {
     Eigen::Rotation2D<double> rotation(angle_rad);
     const Eigen::Vector2d position = Eigen::Vector2d::Random();
     kindr::minimal::Transformation2D kindr_transform(rotation, position);
@@ -40,9 +39,8 @@ TEST(KindrMsgTest, poseKindr2DToMsgToKindr2D) {
     kindr::minimal::Transformation2D output_transform;
     poseMsgToKindr2D(msg, &output_transform);
 
-    EXPECT_NEAR(
-        output_transform.getRotation().angle(), angle_rad, kTestTolerance)
-            << "Angle: " << angle_rad;
+    EXPECT_NEAR(output_transform.getRotation().angle(), angle_rad, kTestTolerance)
+        << "Angle: " << angle_rad;
     EXPECT_NEAR_EIGEN(output_transform.getPosition(), position, kTestTolerance);
   }
 }
@@ -51,19 +49,16 @@ TEST(KindrMsgTest, poseMsgToKindr2DFailsForInvalidInputPose) {
   geometry_msgs::Pose invalid_position_msg;
   invalid_position_msg.position.z = 1.0;
   kindr::minimal::Transformation2D invalid_position_output_transform;
-  EXPECT_DEATH(
-      poseMsgToKindr2D(
-          invalid_position_msg, &invalid_position_output_transform),
-      "No proper 2D position.");
+  EXPECT_DEATH(poseMsgToKindr2D(invalid_position_msg, &invalid_position_output_transform),
+               "No proper 2D position.");
 
   geometry_msgs::Pose invalid_rotation_msg;
   kindr::minimal::Transformation2D invalid_rotation_output_transform;
   const kindr::minimal::RotationQuaternion invalid_2d_rotation(
       kindr::minimal::AngleAxis(0.5, 0.0, 1.0, 0.0));
   quaternionKindrToMsg(invalid_2d_rotation, &invalid_rotation_msg.orientation);
-  EXPECT_DEATH(
-      poseMsgToKindr2D(invalid_rotation_msg, &invalid_rotation_output_transform),
-      "No proper 2D rotation.");
+  EXPECT_DEATH(poseMsgToKindr2D(invalid_rotation_msg, &invalid_rotation_output_transform),
+               "No proper 2D rotation.");
 }
 
 TEST(KindrMsgTest, transformKindrToMsgToKindr) {
@@ -77,9 +72,8 @@ TEST(KindrMsgTest, transformKindrToMsgToKindr) {
   kindr::minimal::QuatTransformation output_transform;
   transformMsgToKindr(msg, &output_transform);
 
-  EXPECT_NEAR_EIGEN(
-      output_transform.getRotation().toImplementation().coeffs(),
-      rotation.coeffs(), kTestTolerance);
+  EXPECT_NEAR_EIGEN(output_transform.getRotation().toImplementation().coeffs(), rotation.coeffs(),
+                    kTestTolerance);
   EXPECT_NEAR_EIGEN(output_transform.getPosition(), position, kTestTolerance);
 }
 
@@ -92,8 +86,7 @@ TEST(KindrMsgTest, quaternionKindrToMsgToKindr) {
   Eigen::Quaterniond output_rotation;
   quaternionMsgToKindr(msg, &output_rotation);
 
-  EXPECT_NEAR_EIGEN(
-      output_rotation.coeffs(), rotation.coeffs(), kTestTolerance);
+  EXPECT_NEAR_EIGEN(output_rotation.coeffs(), rotation.coeffs(), kTestTolerance);
 }
 
 TEST(KindrMsgTest, vectorKindrToMsgToKindr) {
@@ -107,9 +100,9 @@ TEST(KindrMsgTest, vectorKindrToMsgToKindr) {
   EXPECT_NEAR_EIGEN(output_position, position, kTestTolerance);
 }
 
-}  // namespace tf
+} // namespace minkindr_conversions
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

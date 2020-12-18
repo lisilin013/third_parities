@@ -1,25 +1,21 @@
-#ifndef MINKINDR_CONVERSIONS_KINDR_XML_H
-#define MINKINDR_CONVERSIONS_KINDR_XML_H
+#pragma once
 
-#include <XmlRpcValue.h>
-#include <kindr/minimal/quat-transformation.h>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <XmlRpcValue.h>
+#include <kindr/minimal/quat-transformation.h>
 
 #include <glog/logging.h>
 
-namespace kindr {
-namespace minimal {
+namespace minkindr_conversions {
 
 // Convert from an xml RPC (from ROS Param server) to a
 // kindr::minimal::QuatTransformation.
 template <typename Scalar>
-void xmlRpcToKindr(XmlRpc::XmlRpcValue& xml_rpc,
-                   kindr::minimal::QuatTransformationTemplate<Scalar>* kindr) {
-  typename kindr::minimal::QuatTransformationTemplate<Scalar>::RotationMatrix
-      temp_rot_matrix;
-  typename kindr::minimal::QuatTransformationTemplate<Scalar>::Position
-      temp_translation;
+void xmlRpcToKindr(XmlRpc::XmlRpcValue &xml_rpc,
+                   kindr::minimal::QuatTransformationTemplate<Scalar> *kindr) {
+  typename kindr::minimal::QuatTransformationTemplate<Scalar>::RotationMatrix temp_rot_matrix;
+  typename kindr::minimal::QuatTransformationTemplate<Scalar>::Position temp_translation;
 
   if (kindr == nullptr) {
     LOG(ERROR) << "Null pointer given";
@@ -32,8 +28,7 @@ void xmlRpcToKindr(XmlRpc::XmlRpcValue& xml_rpc,
   // read raw inputs
   for (size_t i = 0; i < 3; ++i) {
     if (xml_rpc[i].size() != 4) {
-      LOG(ERROR) << "XmlRpc matrix has " << xml_rpc[i].size()
-                 << " columns in its " << i << " row";
+      LOG(ERROR) << "XmlRpc matrix has " << xml_rpc[i].size() << " columns in its " << i << " row";
       return;
     }
     for (size_t j = 0; j < 3; ++j) {
@@ -44,15 +39,10 @@ void xmlRpcToKindr(XmlRpc::XmlRpcValue& xml_rpc,
 
   // renormalize rotation to correct for rounding error when yaml was written
   kindr::minimal::RotationQuaternionTemplate<Scalar> temp_rot_quat =
-      kindr::minimal::RotationQuaternionTemplate<
-          Scalar>::constructAndRenormalize(temp_rot_matrix);
+      kindr::minimal::RotationQuaternionTemplate<Scalar>::constructAndRenormalize(temp_rot_matrix);
 
   // recombine
-  *kindr = kindr::minimal::QuatTransformationTemplate<Scalar>(temp_rot_quat,
-                                                              temp_translation);
+  *kindr = kindr::minimal::QuatTransformationTemplate<Scalar>(temp_rot_quat, temp_translation);
 }
 
-}  // namespace minimal
-}  // namespace kindr
-
-#endif  // MINKINDR_CONVERSIONS_KINDR_TF_H
+} // namespace minkindr_conversions
